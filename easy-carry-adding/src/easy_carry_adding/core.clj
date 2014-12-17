@@ -12,6 +12,7 @@
   (defn reverse-vector [str] (into [] (map #(Character/getNumericValue %) (str/reverse str))))
   (defn pad-vector [len vec] (concat vec (into [] (repeat (- (- len 1) (count vec)) 0))))
   (defn get-carry-digit [vec] (int (math/floor (/ (reduce + vec) 10))))
+  (defn get-sum-digit [carry vec] (int (+ carry (mod (reduce + vec) 10))))
   
   ;; input comes in as ArraySeq. Split into strings on '+' character
   (def integer-strings (str/split (first args) #"\+"))
@@ -20,14 +21,17 @@
   (def sum-length (count (str sum)))
   ;; adding zeros to the vectorized input, otherwise the slicing stops at the length of the shortest input
   (def padded-input-vectors (map pad-vector (repeat (count reverse-int-strings) sum-length) reverse-int-strings))
-  (def carry-vectors (apply map vector padded-input-vectors))
+  (def column-vectors (apply map vector padded-input-vectors))
+  (def carry-digits (map get-carry-digit column-vectors))
   ;; right-justify format
   (def formatter (str/join ["%" (str sum-length) "d"]))
   (def dividing-line (str/join (repeat sum-length "-")))
   
+  (println carry-digits)
+  (println (map get-sum-digit carry-digits column-vectors))
   (doseq [x integer-strings] (println (format formatter (str2int x))))
   (println dividing-line)
   (println sum)
   (println dividing-line)
-  (println (str/replace (str/join (reverse (map get-carry-digit carry-vectors))) "0" " "))
+  (println (str/replace (str/join (reverse (map get-carry-digit column-vectors))) "0" " "))
 )
