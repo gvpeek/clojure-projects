@@ -1,0 +1,3 @@
+rush segment success
+add step to outcome
+per outcome calculate distance 
